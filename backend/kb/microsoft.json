@@ -1,0 +1,25 @@
+{
+  "company": "microsoft",
+  "interview_style": "Multi-round: coding, system design, and a dedicated 'As Appropriate' (AA) final interview with a senior leader. Growth mindset is critical — interviewers actively look for self-awareness, learning from failure, and collaborative problem-solving.",
+  "focus_areas": [
+    "Object-oriented design and clean code principles",
+    "System design at Microsoft cloud (Azure) scale",
+    "Growth mindset: learning from failure, coachability",
+    "Collaboration and cross-team alignment",
+    "Product thinking and customer empathy",
+    "Data structures, algorithms, and problem-solving clarity"
+  ],
+  "culture_notes": "Microsoft's core pillar is 'growth mindset' (Carol Dweck). Interviewers are trained to distinguish fixed-mindset vs growth-mindset responses. They value candidates who acknowledge gaps, show willingness to learn, and demonstrate empathy for customers and colleagues. Avoid bragging without showing learning from mistakes.",
+  "common_questions": [
+    "Tell me about a time you failed and what you learned from it.",
+    "Design a scalable notification system for Microsoft Teams.",
+    "How would you architect OneDrive's file sync mechanism?",
+    "Describe a situation where you had to influence without authority.",
+    "What is your approach when you receive critical feedback?",
+    "Design a rate-limiting system for an Azure API gateway.",
+    "How do you prioritise features when you have conflicting stakeholder requests?",
+    "Explain a technically complex system you built and its trade-offs.",
+    "How would you design the backend for Microsoft Outlook's calendar?",
+    "Give an example of a time you improved a process or made something more efficient."
+  ]
+}

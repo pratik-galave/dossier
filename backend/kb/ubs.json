@@ -1,0 +1,25 @@
+{
+  "company": "ubs",
+  "interview_style": "Formal, structured financial services interview. Combines competency-based behavioural questions, technical finance/technology questions, and market awareness. Risk awareness, regulatory compliance mindset, and attention to detail are heavily evaluated. Dress code and professional demeanour matter.",
+  "focus_areas": [
+    "Financial markets knowledge: equities, fixed income, FX, derivatives",
+    "Risk management: market risk, credit risk, operational risk frameworks",
+    "Regulatory landscape: MiFID II, Basel III, GDPR for financial data",
+    "Technology in finance: low-latency trading systems, real-time risk engines",
+    "Competency framework: client focus, collaboration, integrity, excellence",
+    "Quantitative skills for technology and quant roles"
+  ],
+  "culture_notes": "UBS is a global investment bank and wealth manager. The culture values discretion, professionalism, and long-term client relationships. Interviewers look for candidates who understand that mistakes in finance can have real regulatory and reputational consequences — so rigour, compliance mindset, and risk awareness are paramount. Show you understand the business context of technical decisions.",
+  "common_questions": [
+    "Walk me through how you would build a real-time risk aggregation system.",
+    "How would you ensure regulatory compliance in a trading platform?",
+    "Tell me about a time you identified and mitigated a risk before it became a problem.",
+    "How would you design a low-latency order management system?",
+    "What are the key differences between market risk and credit risk?",
+    "Describe a situation where precision and accuracy were critical to your work.",
+    "How do you stay current with financial regulations in your technical role?",
+    "Design a reconciliation system for a global custodian bank.",
+    "Tell me about a time you worked under significant pressure with high-stakes outcomes.",
+    "How would you approach migrating a legacy trading system to cloud infrastructure?"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "company": "google",
+  "interview_style": "Structured, multi-round. Combines coding (LeetCode-style), system design, behavioural (Googleyness), and role-specific rounds. Strong emphasis on communication and walking through your thought process aloud.",
+  "focus_areas": [
+    "Data structures and algorithms (graphs, trees, dynamic programming)",
+    "Large-scale system design (Google Search, YouTube, Maps scale)",
+    "Googleyness: collaborative, intellectually humble, bias for action",
+    "Ambiguity handling and structured problem decomposition",
+    "Leadership and cross-functional influence"
+  ],
+  "culture_notes": "Google values 'Googleyness' — being comfortable with ambiguity, showing intellectual curiosity, and collaborating openly. They expect candidates to explain their thinking, not just give answers. Interviewers look for candidates who push back respectfully and explore edge cases proactively.",
+  "common_questions": [
+    "Design Google Search's autocomplete system at scale.",
+    "How would you redesign YouTube's recommendation algorithm?",
+    "Tell me about a time you disagreed with a decision and how you handled it.",
+    "You have to improve a poorly performing service at Google — walk me through your approach.",
+    "What is the time complexity of your solution? Can you optimize it further?",
+    "How do you handle ambiguity when requirements are unclear?",
+    "Design a distributed key-value store like Bigtable.",
+    "Tell me about the most technically complex project you've worked on.",
+    "How would you detect and prevent spam in Gmail at scale?",
+    "Walk me through how PageRank works and how you'd improve it."
+  ]
+}

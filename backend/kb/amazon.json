@@ -1,0 +1,25 @@
+{
+  "company": "amazon",
+  "interview_style": "Heavily structured around Amazon's 16 Leadership Principles. Every question — even technical ones — is expected to connect back to a leadership principle. Uses STAR format strictly. Hiring Bar Raiser is present in every loop to ensure calibration.",
+  "focus_areas": [
+    "Amazon Leadership Principles (all 16, especially Customer Obsession, Ownership, Bias for Action)",
+    "STAR-method storytelling with measurable outcomes",
+    "Operational excellence and cost optimisation mindset",
+    "Distributed systems and AWS service design",
+    "Data-driven decision-making",
+    "Handling failure, disagreement, and high ambiguity"
+  ],
+  "culture_notes": "Amazon expects every answer to implicitly demonstrate Leadership Principles. 'Customer Obsession' is paramount — always anchor answers to customer impact. The Bar Raiser can veto any hire. Candidates who give generic answers without data or specific ownership stories are typically rejected. Prepare 10–15 STAR stories that can flex across multiple LPs.",
+  "common_questions": [
+    "Tell me about a time you put the customer first, even at personal cost.",
+    "Describe a time you took ownership of a problem outside your direct responsibility.",
+    "Design Amazon's order fulfillment system at Black Friday scale.",
+    "Tell me about a time you made a decision with incomplete data.",
+    "Give an example of when you disagreed with your manager and what happened.",
+    "Describe the most complex system you've designed and its failure modes.",
+    "How do you handle tight deadlines with competing priorities?",
+    "Tell me about a time you simplified a complex process.",
+    "Design a recommendation engine for Amazon.com.",
+    "Give an example of when you raised the bar for quality in your team."
+  ]
+}

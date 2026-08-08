@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-white text-gray-900 leading-relaxed;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Primary button — black fill */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-md
+           transition-all duration-150 hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2
+           active:scale-[0.98] cursor-pointer select-none;
+  }
+
+  /* Secondary / ghost button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white text-gray-700 text-sm font-medium rounded-md
+           border border-[#E5E7EB] transition-all duration-150 hover:bg-gray-50 hover:border-gray-300
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2
+           active:scale-[0.98] cursor-pointer select-none;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white border border-[#E5E7EB] rounded-xl p-6;
+  }
+
+  /* Section container */
+  .container-content {
+    @apply max-w-[1120px] mx-auto px-6;
+  }
+
+  /* Subtle badge / pill */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full;
+  }
+}

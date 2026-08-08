@@ -1,0 +1,25 @@
+{
+  "company": "salesforce",
+  "interview_style": "Combination of technical, product, and values-based interviews. Salesforce 'Ohana' culture is central — expect heavy emphasis on team-first mentality, customer success, trust, and equality. Technical rounds vary by role but always include a values alignment round.",
+  "focus_areas": [
+    "Salesforce core values: Trust, Customer Success, Innovation, Equality, Sustainability",
+    "Ohana culture: inclusive, team-first, giving back",
+    "CRM domain knowledge and cloud platform architecture",
+    "Apex, Salesforce Platform development (for technical roles)",
+    "Customer success orientation and stakeholder management",
+    "Agile delivery and rapid iteration"
+  ],
+  "culture_notes": "Salesforce's 'Ohana' (Hawaiian for family) is a defining cultural element. Interviewers assess genuine alignment — not just lip service — with values like equality and trust. Candidates who demonstrate community involvement or mentorship resonate well. The company has strong voluntary philanthropy programs (1-1-1 model: 1% equity, 1% product, 1% employee time to philanthropy).",
+  "common_questions": [
+    "How do you demonstrate customer success in your day-to-day work?",
+    "Tell me about a time you helped a colleague grow or succeed.",
+    "How do you balance speed of delivery with quality?",
+    "Describe your experience with CRM platforms or cloud architecture.",
+    "Give an example of how you built trust with a difficult stakeholder.",
+    "How would you architect a multi-tenant SaaS platform at Salesforce scale?",
+    "Tell me about a time you advocated for a customer's needs internally.",
+    "How do you approach problems where equality and business goals conflict?",
+    "Design the backend for Salesforce's lead scoring system.",
+    "What does 'customer success' mean to you and how do you measure it?"
+  ]
+}
