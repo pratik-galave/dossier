@@ -1,55 +1,26 @@
-# ── Zerops Deployment Configuration ──────────────────────────────────────────
-# https://docs.zerops.io/references/zeropsyml
-
 zerops:
-  # ── 1. Frontend Service (React + Vite + Static Nginx) ────────────────────────
-  - setup: frontend
+  - setup: dossier-backend
     build:
-      base: nodejs@20
+      base: python@3.11
       buildCommands:
-        - cd frontend
-        - npm install
-        - npm run build
-      deployFiles:
-        - frontend/dist/~
-      cache:
-        - frontend/node_modules
-    run:
-      base: static
-      ports:
-        - port: 80
-          httpSupport: true
-      routing:
-        - location: /
-          tryFiles:
-            - $uri
-            - $uri/
-            - /index.html
-
-  # ── 2. Backend Service (FastAPI Python Application) ─────────────────────────
-  - setup: backend
-    build:
-      base: python@3.12
-      buildCommands:
-        - cd backend
-        - pip install --upgrade pip
         - pip install -r requirements.txt
-      deployFiles:
-        - backend/~
-      cache:
-        - ~/.cache/pip
+      deployFiles: ./
     run:
-      base: python@3.12
+      base: python@3.11
       ports:
         - port: 8000
           httpSupport: true
-      envVariables:
-        MONGODB_URI: ${mongodb_connectionString}
-        GROQ_API_KEY: placeholder_groq_api_key
-        ANTHROPIC_API_KEY: placeholder_anthropic_api_key
-        ELEVENLABS_API_KEY: placeholder_elevenlabs_api_key
       start: uvicorn main:app --host 0.0.0.0 --port 8000
+      envVariables:
+        GROQ_API_KEY: <your_groq_key>
+        MONGODB_URI: <will_be_filled_by_zerops>
 
-  # ── 3. Database Service (Managed MongoDB) ──────────────────────────────────
-  # Provision a MongoDB database service named `mongodb` in the Zerops GUI/CLI.
-  # Zerops automatically injects `${mongodb_connectionString}` into the backend environment.
+  - setup: dossier-frontend
+    build:
+      base: nodejs@20
+      buildCommands:
+        - npm install
+        - npm run build
+      deployFiles: ./dist
+    run:
+      base: static
