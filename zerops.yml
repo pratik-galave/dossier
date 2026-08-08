@@ -12,4 +12,18 @@ zerops:
           httpSupport: true
       prepareCommands:
         - pip install fastapi uvicorn groq python-dotenv httpx pydantic python-multipart
-      start: python -c "import os; print(os.listdir('.'))"
+      start: python -c "import os; print(os.listdir('.'))"zerops:
+  - setup: backend
+    build:
+      base: python@3.11
+      buildCommands:
+        - pip install -r backend/requirements.txt --target backend/packages
+      deployFiles: backend/
+    run:
+      base: python@3.11
+      ports:
+        - port: 8000
+          httpSupport: true
+      prepareCommands:
+        - pip install fastapi uvicorn groq python-dotenv httpx pydantic python-multipart
+      start: python -c "import os; print(os.listdir('.')); print(os.getcwd())"
