@@ -18,12 +18,15 @@ async def connect_db() -> None:
     """Open the MongoDB connection. Called at app startup."""
     global _client, _db
     try:
-        _client = AsyncIOMotorClient(settings.MONGODB_URI, serverSelectionTimeoutMS=3000)
-        _db = _client.get_default_database()
-        await _client.admin.command("ping")
-        print(f"[DB] ✓ Connected to MongoDB — {settings.MONGODB_URI}")
+        _client = AsyncIOMotorClient(settings.MONGODB_URI, serverSelectionTimeoutMS=5000)
+        try:
+            _db = _client.get_default_database()
+        except Exception:
+            _db = _client["dossier"]
+        await _db.command("ping")
+        print(f"[DB] Connected to MongoDB database '{_db.name}'")
     except Exception as exc:
-        print(f"[DB] ✗ MongoDB unavailable ({exc}). Sessions will not be persisted.")
+        print(f"[DB] MongoDB connection error ({exc}). Sessions will not be persisted.")
         _client = None
         _db = None
 
