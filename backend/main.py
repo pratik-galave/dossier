@@ -44,9 +44,14 @@ app = FastAPI(
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://frontend-2c42.prg1.zerops.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
