@@ -1,4 +1,4 @@
-const API_BASE = '/api'
+const API_BASE = 'https://backend-2c42-8000.prg1.zerops.app/api'
 
 export async function startSession(mode, company = null) {
   const payload = {
