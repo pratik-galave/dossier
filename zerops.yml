@@ -19,6 +19,6 @@ zerops:
       base: nodejs@20
       buildCommands:
         - cd frontend && npm install && npm run build
-      deployFiles: frontend/dist/
+      deployFiles: frontend/dist/~
     run:
       base: static
