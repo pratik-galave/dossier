@@ -55,10 +55,39 @@ const modes = [
 
 const COMPANIES = ['Google', 'Amazon', 'Microsoft', 'Salesforce', 'UBS']
 
+// ── Difficulty definitions ────────────────────────────────────────────────────
+const difficulties = [
+  {
+    id: 'diff-easy',
+    key: 'easy',
+    label: 'Easy',
+    tagline: 'Beginner friendly, conceptual questions',
+    accent: '#16a34a',
+    bg: '#f0fdf4',
+  },
+  {
+    id: 'diff-medium',
+    key: 'medium',
+    label: 'Medium',
+    tagline: 'Industry standard interview difficulty',
+    accent: '#ca8a04',
+    bg: '#fefce8',
+  },
+  {
+    id: 'diff-hard',
+    key: 'hard',
+    label: 'Hard',
+    tagline: 'FAANG level, expect follow-ups on everything',
+    accent: '#dc2626',
+    bg: '#fef2f2',
+  },
+]
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function SetupPage() {
   const navigate = useNavigate()
   const [selectedMode, setSelectedMode] = useState('technical')
+  const [selectedDifficulty, setSelectedDifficulty] = useState('medium')
   const [company, setCompany] = useState('')
   const [isStarting, setIsStarting] = useState(false)
   const [error, setError] = useState('')
@@ -75,7 +104,8 @@ export default function SetupPage() {
     try {
       const data = await startSession(
         selectedMode,
-        selectedMode === 'company' ? company.trim() : null
+        selectedMode === 'company' ? company.trim() : null,
+        selectedDifficulty
       )
 
       // Persist session info for the Interview Room to pick up
@@ -154,6 +184,45 @@ export default function SetupPage() {
             </button>
           )
         })}
+      </div>
+
+      <div className="border-t border-[#E5E7EB] mb-10" />
+
+      {/* Difficulty selector */}
+      <div className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-700 mb-1">Difficulty</h2>
+        <p className="text-xs text-gray-400 mb-4">Choose the challenge level for your session.</p>
+        <div className="flex flex-col sm:flex-row gap-3" role="list">
+          {difficulties.map((d) => {
+            const isSelected = selectedDifficulty === d.key
+            return (
+              <button
+                key={d.id}
+                id={d.id}
+                type="button"
+                role="listitem"
+                onClick={() => setSelectedDifficulty(d.key)}
+                aria-pressed={isSelected}
+                aria-label={`Select ${d.label} difficulty`}
+                className="flex-1 flex items-center gap-3 px-4 py-3.5 rounded-xl border text-left transition-all duration-150 cursor-pointer"
+                style={{
+                  borderColor: isSelected ? d.accent : '#E5E7EB',
+                  backgroundColor: isSelected ? d.bg : '#ffffff',
+                  boxShadow: isSelected ? `0 0 0 2px ${d.accent}` : 'none',
+                }}
+              >
+                <span
+                  className="w-3 h-3 rounded-full shrink-0"
+                  style={{ backgroundColor: d.accent }}
+                />
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">{d.label}</p>
+                  <p className="text-xs text-gray-500">{d.tagline}</p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <div className="border-t border-[#E5E7EB] mb-10" />

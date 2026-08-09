@@ -114,6 +114,7 @@ async def session_start(body: SessionStartRequest):
             mode=body.mode.value,
             company=body.company,
             rag_context=rag_context or None,
+            difficulty=body.difficulty.value,
         )
     except Exception as exc:
         raise HTTPException(
@@ -182,6 +183,7 @@ async def respond(body: RespondRequest):
             history=history,
             user_answer=body.user_answer.strip(),
             rag_context=rag_context,
+            difficulty=session.get("difficulty", "medium"),
         )
     except Exception as exc:
         raise HTTPException(

@@ -1,11 +1,12 @@
 """
 Groq LLM service — wraps all calls to the Groq API.
 
-Model: llama-3.1-70b-versatile
+Model: llama-3.3-70b-versatile
 """
 
 from groq import AsyncGroq
 from config import settings
+from services.rag_service import build_company_context_string
 
 # Single shared async client
 _client: AsyncGroq | None = None
@@ -24,10 +25,12 @@ def build_system_prompt(
     mode: str,
     company: str | None = None,
     rag_context: list[str] | None = None,
+    difficulty: str = "medium",
 ) -> str:
     """
     Return the system prompt for the given interview mode.
     rag_context: list of text chunks retrieved from ChromaDB (company mode only).
+    difficulty: 'easy', 'medium', or 'hard'.
     """
     base = """You are Dossier, a sharp and demanding AI interview coach conducting a mock interview.
 
@@ -40,6 +43,16 @@ Rules you MUST follow:
 - Never repeat a question already asked.
 - Do not explain what you're about to do. Just do it.
 - Do not add disclaimers or caveats. Speak directly like a real interviewer."""
+
+    # ── Difficulty clause ──────────────────────────────────────────────────
+    if difficulty == "easy":
+        difficulty_clause = "\n\nDifficulty: Ask beginner-friendly conceptual questions, be encouraging but still honest."
+    elif difficulty == "hard":
+        difficulty_clause = "\n\nDifficulty: Ask FAANG-level questions, be extremely rigorous, probe every answer with follow-ups, accept nothing vague."
+    else:  # medium (default)
+        difficulty_clause = "\n\nDifficulty: Ask standard industry-level questions, probe on weak answers."
+
+    base = base + difficulty_clause
 
     if mode == "technical":
         return base + """
@@ -55,23 +68,20 @@ Probe for: specific situations, measurable impact, conflict resolution, leadersh
 Push back on generic answers — demand specific examples."""
 
     elif mode == "company":
-        company_line = f"The candidate is interviewing at: {company.title() if company else 'a company'}." 
+        # Use structured KB context if available via RAG service
+        kb_block = build_company_context_string(company or "")
 
-        # Inject RAG-retrieved context if available
-        rag_block = ""
+        # Also honour any raw rag_context chunks passed in (backwards compat)
+        extra_chunks = ""
         if rag_context:
             formatted = "\n".join(f"- {chunk}" for chunk in rag_context)
-            rag_block = f"""
-
-Known patterns and context for this company (retrieved from knowledge base):
-{formatted}
-
-Use this context to ask hyper-relevant, company-specific questions."""
+            extra_chunks = f"\n\nAdditional context:\n{formatted}"
 
         return base + f"""
 
-Interview focus: Company-specific and role-fit questions. {company_line}
-Probe for: alignment with the company's known values and culture, product knowledge, why this company.{rag_block}"""
+Interview focus: Company-specific and role-fit questions.
+{kb_block}{extra_chunks}
+Probe for: alignment with the company's known values and culture, product knowledge, why this company."""
 
     return base
 
@@ -80,11 +90,12 @@ def build_opening_question(
     mode: str,
     company: str | None = None,
     rag_context: list[str] | None = None,
+    difficulty: str = "medium",
 ) -> tuple[list[dict], str]:
     """
     Messages list to send to Groq to generate the first interview question.
     """
-    system = build_system_prompt(mode, company, rag_context)
+    system = build_system_prompt(mode, company, rag_context, difficulty)
     user_prompt = (
         "Begin the interview. Introduce yourself in one sentence and ask the first question immediately."
     )
@@ -100,10 +111,11 @@ async def generate_first_question(
     mode: str,
     company: str | None = None,
     rag_context: list[str] | None = None,
+    difficulty: str = "medium",
 ) -> str:
     """Call Groq to produce the opening question for a new session."""
     client = get_groq_client()
-    messages, system_prompt = build_opening_question(mode, company, rag_context)
+    messages, system_prompt = build_opening_question(mode, company, rag_context, difficulty)
 
     completion = await client.chat.completions.create(
         model=MODEL,
@@ -120,13 +132,14 @@ async def generate_follow_up(
     history: list[dict],   # list of {"role": "user"|"assistant", "content": str}
     user_answer: str,
     rag_context: list[str] | None = None,
+    difficulty: str = "medium",
 ) -> str:
     """
     Call Groq with the full conversation history + the new user answer.
     Returns the AI's next question/response.
     """
     client = get_groq_client()
-    system_prompt = build_system_prompt(mode, company, rag_context)
+    system_prompt = build_system_prompt(mode, company, rag_context, difficulty)
 
     # Build messages: history (already formatted) + new user turn
     messages = history + [{"role": "user", "content": user_answer}]

@@ -20,9 +20,9 @@ class InterviewMode(str, Enum):
 
 
 class Difficulty(str, Enum):
-    junior = "junior"
-    mid = "mid"
-    senior = "senior"
+    easy = "easy"
+    medium = "medium"
+    hard = "hard"
 
 
 # ── Message (stored in MongoDB & sent to Groq) ────────────────────────────────
@@ -40,7 +40,7 @@ class SessionStartRequest(BaseModel):
     """POST /api/session/start"""
     mode: InterviewMode
     company: str | None = None          # Used when mode == "company"
-    difficulty: Difficulty = Difficulty.mid
+    difficulty: Difficulty = Difficulty.medium
 
 
 class SessionStartResponse(BaseModel):

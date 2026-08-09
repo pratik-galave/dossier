@@ -106,6 +106,9 @@ export default function InterviewRoomPage() {
   const [uiState, setUiState] = useState('idle') // 'idle' | 'recording' | 'processing' | 'speaking'
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [isEnding, setIsEnding] = useState(false)
+  const [questionCount, setQuestionCount] = useState(0)
+
+  const MAX_QUESTIONS = 10
 
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
@@ -348,6 +351,7 @@ export default function InterviewRoomPage() {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     }
     setMessages((prev) => [...prev, aiMsg])
+    setQuestionCount((prev) => prev + 1)
     speakAiResponse(aiResponseText)
   }
 
@@ -429,9 +433,18 @@ export default function InterviewRoomPage() {
             <span className="badge">{modeLabel}</span>
             <span
               id="interview-timer"
-              className="text-sm font-mono font-medium text-gray-700 bg-gray-100 px-2.5 py-1 rounded-md"
-              aria-label="Elapsed time"
+              className="text-sm font-mono font-medium text-gray-700 bg-gray-100 px-2.5 py-1 rounded-md flex items-center gap-1.5"
+              aria-label={`Question ${questionCount}, elapsed time ${formatTimer(elapsedSeconds)}`}
             >
+              <span
+                id="interview-question-count"
+                className={`font-bold ${
+                  questionCount >= MAX_QUESTIONS ? 'text-red-600' : 'text-gray-900'
+                }`}
+              >
+                Q{questionCount}
+              </span>
+              <span className="text-gray-400">|</span>
               ⏱️ {formatTimer(elapsedSeconds)}
             </span>
           </div>
@@ -446,15 +459,23 @@ export default function InterviewRoomPage() {
         {/* Progress */}
         <div className="px-6 py-4 border-b border-[#E5E7EB]">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-gray-500">Turns</span>
-            <span className="text-xs text-gray-400">{Math.floor(messages.length / 2)}</span>
+            <span className="text-xs text-gray-500">Questions</span>
+            <span className={`text-xs font-medium ${
+              questionCount >= MAX_QUESTIONS ? 'text-red-600' : 'text-gray-400'
+            }`}>
+              {questionCount} / {MAX_QUESTIONS}
+            </span>
           </div>
           <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
             <div
               id="interview-progress-bar"
-              className="h-full bg-gray-900 rounded-full transition-all duration-300"
-              style={{ width: `${Math.min(messages.length * 8, 100)}%` }}
+              className={`h-full rounded-full transition-all duration-300 ${
+                questionCount >= MAX_QUESTIONS ? 'bg-red-500' : 'bg-gray-900'
+              }`}
+              style={{ width: `${Math.min((questionCount / MAX_QUESTIONS) * 100, 100)}%` }}
               role="progressbar"
+              aria-valuenow={questionCount}
+              aria-valuemax={MAX_QUESTIONS}
             />
           </div>
         </div>
@@ -489,6 +510,33 @@ export default function InterviewRoomPage() {
 
       {/* ── Right panel: Voice + Chat ── */}
       <div className="flex-1 flex flex-col min-h-0 bg-white">
+
+        {/* Max questions banner */}
+        {questionCount >= MAX_QUESTIONS && (
+          <div
+            id="interview-max-questions-banner"
+            className="mx-4 mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-amber-50 border border-amber-300 rounded-xl text-sm"
+            role="alert"
+          >
+            <div className="flex items-center gap-2 text-amber-900 font-medium">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              You've completed 10 questions! End the session to see your results.
+            </div>
+            <button
+              type="button"
+              id="interview-end-btn-banner"
+              onClick={handleEndSession}
+              disabled={isEnding}
+              className="btn-primary shrink-0 text-xs px-4 py-2 disabled:opacity-60"
+            >
+              {isEnding ? 'Ending…' : 'End Session →'}
+            </button>
+          </div>
+        )}
         {/* Chat transcript */}
         <div
           id="interview-transcript"
@@ -582,7 +630,11 @@ export default function InterviewRoomPage() {
           </div>
 
           {/* Mic button */}
-          <MicButton state={uiState} onClick={handleMicClick} />
+          <MicButton
+            state={uiState}
+            onClick={handleMicClick}
+            disabled={questionCount >= MAX_QUESTIONS}
+          />
 
           {/* Text input fallback */}
           <form onSubmit={handleTextSubmit} className="flex items-center gap-2 w-full max-w-md">

@@ -1,15 +1,23 @@
-const API_BASE = 'https://backend-2c42-8000.prg1.zerops.app/api'
+const API_BASE = 'https://backend-2c42-8000.prg1.zerops.app'
 
-export async function startSession(mode, company = null) {
+export async function startSession(mode, company = null, difficulty = 'medium') {
+  // Sanitise difficulty — must be exactly one of the three accepted values
+  const validDifficulties = ['easy', 'medium', 'hard']
+  const safeDifficulty = validDifficulties.includes(difficulty) ? difficulty : 'medium'
+
+  // Build payload — company is ONLY included when mode is "company" AND a name is provided
   const payload = {
     mode,
-    difficulty: 'mid',
+    difficulty: safeDifficulty,
   }
-  if (mode === 'company' && company) {
-    payload.company = company
+  if (mode === 'company' && company && company.trim()) {
+    payload.company = company.trim()
   }
 
-  const res = await fetch(`${API_BASE}/session/start`, {
+  // Debug: verify payload in browser console before every request
+  console.log('[Dossier] startSession payload:', JSON.stringify(payload, null, 2))
+
+  const res = await fetch(`${API_BASE}/api/session/start`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -24,7 +32,7 @@ export async function startSession(mode, company = null) {
 }
 
 export async function sendAnswer(sessionId, answer) {
-  const res = await fetch(`${API_BASE}/respond`, {
+  const res = await fetch(`${API_BASE}/api/respond`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -42,7 +50,7 @@ export async function sendAnswer(sessionId, answer) {
 }
 
 export async function endSession(sessionId) {
-  const res = await fetch(`${API_BASE}/session/end`, {
+  const res = await fetch(`${API_BASE}/api/session/end`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -62,7 +70,7 @@ export async function transcribeAudio(audioBlob, filename = 'audio.webm') {
   const formData = new FormData()
   formData.append('file', audioBlob, filename)
 
-  const res = await fetch(`${API_BASE}/transcribe`, {
+  const res = await fetch(`${API_BASE}/api/transcribe`, {
     method: 'POST',
     body: formData,
   })
