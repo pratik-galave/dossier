@@ -12,5 +12,4 @@ zerops:
           httpSupport: true
       prepareCommands:
         - pip install fastapi uvicorn groq python-dotenv httpx pydantic python-multipart
-      workingDir: /var/www/backend
-      start: python -c "import os; print(os.getcwd()); print(os.listdir('.')); print(os.listdir('./backend') if os.path.exists('./backend') else 'no backend folder')"
+      start: python -m uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir /var/www/backend
