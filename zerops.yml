@@ -11,5 +11,5 @@ zerops:
         - port: 8000
           httpSupport: true
       prepareCommands:
-        - pip install fastapi uvicorn groq python-dotenv httpx pydantic python-multipart motor
+        - pip install fastapi uvicorn groq python-dotenv httpx pydantic pydantic-settings python-multipart motor
       start: python -m uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir /var/www/backend
