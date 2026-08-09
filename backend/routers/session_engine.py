@@ -7,9 +7,7 @@ Endpoints:
   POST /api/respond        → Handle user answer, return AI follow-up via Groq
 """
 
-import json
 import logging
-import os
 import uuid
 from datetime import datetime, timezone
 
@@ -48,8 +46,7 @@ def _sessions_collection():
 
 async def _fetch_session(session_id: str) -> dict:
     """
-    Fetch a session document.
-    Tries MongoDB first, then falls back to file-based storage.
+    Fetch a session document from MongoDB.
     Raises 404 if not found.
     """
     col = _sessions_collection()
@@ -58,16 +55,11 @@ async def _fetch_session(session_id: str) -> dict:
         if doc:
             return doc
 
-    # Fall back to file-based storage
-    doc = load_session(session_id)
-    if doc:
-        return doc
-
     raise HTTPException(status_code=404, detail=f"Session '{session_id}' not found.")
 
 
 async def _save_session(doc: dict) -> None:
-    """Upsert a session document to MongoDB, or persist to disk if DB is down."""
+    """Upsert a session document to MongoDB."""
     col = _sessions_collection()
     if col is not None:
         await col.replace_one(
@@ -76,37 +68,7 @@ async def _save_session(doc: dict) -> None:
             upsert=True,
         )
     else:
-        save_session(doc["session_id"], doc)
-
-
-# ── File-based session storage ───────────────────────────────────────────────
-# Sessions are persisted as JSON files so they survive server restarts.
-
-SESSIONS_DIR = "sessions"
-os.makedirs(SESSIONS_DIR, exist_ok=True)
-
-
-def save_session(session_id: str, data: dict) -> None:
-    """Write a session document to disk as JSON."""
-    with open(f"{SESSIONS_DIR}/{session_id}.json", "w", encoding="utf-8") as f:
-        json.dump(data, f)
-
-
-def load_session(session_id: str) -> dict | None:
-    """Read a session document from disk. Returns None if not found."""
-    try:
-        with open(f"{SESSIONS_DIR}/{session_id}.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return None
-
-
-def delete_session(session_id: str) -> None:
-    """Remove a session file from disk."""
-    try:
-        os.remove(f"{SESSIONS_DIR}/{session_id}.json")
-    except FileNotFoundError:
-        pass
+        logger.warning(f"MongoDB not available. Cannot save session {doc['session_id']}")
 
 
 

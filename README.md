@@ -30,7 +30,7 @@ Built for the **WeMakeDevs x Zerops Buildathon**.
 
 **Backend:**
 * FastAPI (Python)
-* File-based JSON Session Storage
+* MongoDB Session Storage
 * Dict-based local KB lookup for RAG
 
 **AI & Cloud:**
