@@ -7,7 +7,9 @@ Endpoints:
   POST /api/respond        → Handle user answer, return AI follow-up via Groq
 """
 
+import json
 import logging
+import os
 import uuid
 from datetime import datetime, timezone
 
@@ -46,8 +48,8 @@ def _sessions_collection():
 
 async def _fetch_session(session_id: str) -> dict:
     """
-    Fetch a session document from MongoDB.
-    Falls back to an in-memory lookup if MongoDB is unavailable.
+    Fetch a session document.
+    Tries MongoDB first, then falls back to file-based storage.
     Raises 404 if not found.
     """
     col = _sessions_collection()
@@ -56,8 +58,8 @@ async def _fetch_session(session_id: str) -> dict:
         if doc:
             return doc
 
-    # Try in-memory store (set by /session/start when DB is down)
-    doc = _memory_store.get(session_id)
+    # Fall back to file-based storage
+    doc = load_session(session_id)
     if doc:
         return doc
 
@@ -65,7 +67,7 @@ async def _fetch_session(session_id: str) -> dict:
 
 
 async def _save_session(doc: dict) -> None:
-    """Upsert a session document to MongoDB (or keep in memory if DB is down)."""
+    """Upsert a session document to MongoDB, or persist to disk if DB is down."""
     col = _sessions_collection()
     if col is not None:
         await col.replace_one(
@@ -74,11 +76,38 @@ async def _save_session(doc: dict) -> None:
             upsert=True,
         )
     else:
-        _memory_store[doc["session_id"]] = doc
+        save_session(doc["session_id"], doc)
 
 
-# In-memory fallback when MongoDB is not available (dev / demo mode)
-_memory_store: dict[str, dict] = {}
+# ── File-based session storage ───────────────────────────────────────────────
+# Sessions are persisted as JSON files so they survive server restarts.
+
+SESSIONS_DIR = "sessions"
+os.makedirs(SESSIONS_DIR, exist_ok=True)
+
+
+def save_session(session_id: str, data: dict) -> None:
+    """Write a session document to disk as JSON."""
+    with open(f"{SESSIONS_DIR}/{session_id}.json", "w", encoding="utf-8") as f:
+        json.dump(data, f)
+
+
+def load_session(session_id: str) -> dict | None:
+    """Read a session document from disk. Returns None if not found."""
+    try:
+        with open(f"{SESSIONS_DIR}/{session_id}.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+def delete_session(session_id: str) -> None:
+    """Remove a session file from disk."""
+    try:
+        os.remove(f"{SESSIONS_DIR}/{session_id}.json")
+    except FileNotFoundError:
+        pass
+
 
 
 # ── POST /api/session/start ───────────────────────────────────────────────────
